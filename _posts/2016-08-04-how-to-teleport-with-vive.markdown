@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "如何在HTC Vive中实现瞬移 -- 一个示例"
-date:   2016-08-16 11:20:30 +0800
+date:   2016-08-04 15:30:30 +0800
 categories: vive tech
 ---
 
