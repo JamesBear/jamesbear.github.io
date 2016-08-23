@@ -11,13 +11,13 @@ categories: vive tech
 
 #### 通过监听device_connected事件
 
-1. 在测试脚本的OnEnable中写上
+1.在测试脚本的OnEnable中写上
 
 ```    
 SteamVR_Utils .Event .Listen( "device_connected", OnDeviceConnected);
 ```
         
-2. 实现OnDeviceConnected函数
+2.实现OnDeviceConnected函数
 
 ```    
 private void OnDeviceConnected( params object [] args)
@@ -36,7 +36,7 @@ private void OnDeviceConnected( params object [] args)
 }
 ```
 
-3. 查询设备对象
+3.查询设备对象
 
 ```
 controller = SteamVR_Controller.Input(controllerIndex);
