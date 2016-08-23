@@ -5,8 +5,6 @@ date:   2016-08-23 11:20:30 +0800
 categories: vive tech
 ---
 
-
-
 ### 如何获得手柄(类型为SteamVR_Controller.Device)对象？
 
 有两种方式。
@@ -20,6 +18,7 @@ SteamVR_Utils .Event .Listen( "device_connected", OnDeviceConnected);
 ```
         
 2. 实现OnDeviceConnected函数
+
 ```    
 private void OnDeviceConnected( params object [] args)
 {
