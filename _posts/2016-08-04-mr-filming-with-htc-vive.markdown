@@ -60,13 +60,13 @@ Mixed Reality视频就是VR影像+人的影像合成的视频。相比普通方�
 高成本：专业摄像机+视频采集卡。例如Sony A7S II
 
 高性能主机：
-因为同时需要运行Vive游戏和录像，对配置要求较高。显卡推荐980ti，CPU推荐i7-4790以上。
+因为同时需要运行Vive游戏和录像，对配置要求较高。显卡推荐980ti\1070\1080，CPU推荐i7-4790以上。
 
 第三个手柄：
 目前Vive只能连接两个无线手柄，所以需要用一个长一点的USB线来连接第三个手柄。
 
-4K屏幕：
-为了合成1080p视频，屏幕需要能放得下多个1080p窗口。
+屏幕：
+为了合成高清1080p视频，屏幕需要能摆下4个1080p画面，因此要4k屏幕；如果用1080p屏幕，游戏画面只有960x540，需要放大才能合成1080p视频，如果对清晰度要求不高可以用这种方案。
 
 ### 软件部分：
 
@@ -86,42 +86,70 @@ OBS:
 
 ### 为游戏开启MR模式
 
-Unity SteamVR插件版本升级到v1.0.8或以上
-在游戏的根目录（如果用的是Unity3D工程而不是发而好的游戏，就放在工程根目录）下加上externalcamera.cfg
-          新建一个空白文件，重命名为externalcamera.cfg，在其中加上如下内容
+1.Unity SteamVR插件版本升级到v1.0.8或以上
 
-``` 
+在游戏的根目录（如果用的是Unity3D工程而不是发而好的游戏，就放在工程根目录）下加上externalcamera.cfg
+
+2.新建一个空白文件，重命名为externalcamera.cfg，在其中加上如下内容
+
+```
 x=0
 y=0
 z=0
 rx=0
 ry=0
 rz=0
-fov=60
+fov=40
 near=0.1
 far=100
 sceneResolutionScale=1
 ```
 
-  要注意的是，以上参数只是默认值。最终要用什么数和摄像机的参数及摄像机和手柄的摆放有关。
-     3. 连接第三个手柄
-          通过USB连接第三个手柄。
+要注意的是，以上参数只是默认值。最终要用什么数和摄像机的参数及摄像机和手柄的摆放有关。它们的意义分别是：
+    
+```    
+x,y,z: 摄像机与第三手柄的位置偏移，单位是米
+rx,ry,rz: 摄像机与第三手柄的角度偏移，单位是度
+fov: 摄像机的垂直FOV，和摄像机、镜头有关，单位是度
+near, far: 视域的范围，单位是米，一般不需要改
+sceneResolutionScale: 渲染比例，小于1的话画质会变差但性能会提升
+```
+    
+其中x,y,z, rx,ry,rz, fov都是需要测量的。后文会提供方法。
+
+3.连接第三个手柄
+
+通过USB连接第三个手柄。
+
 如果这三个条件都准备好了，点击开始游戏，PC上的游戏画面会分成4块，具体见下面的"OBS合成"。
 
 
 ### 安装摄像机和第三个手柄：
 
-#### 硬件安装
-
 如果有相机肩架或者手架，将摄像机和手柄都安装在架子上。如果没有架子，就把手柄绑在相机上。确保在移动架子（或者相机）的时候，相机和手柄相对位置和相对朝向不变。
 
 ![screenshot3](/assets/mr_filming_with_htc_vive_files/3.png)
 
-#### 计算出摄像机和手柄之间的偏移
+### 测量摄像机FOV
 
-也就是得出externalcamera.cfg中的参数。x,y,z是摄像机和手柄的相对位置，rx,ry,rz是相对朝向。
+FOV就是摄像机视野的垂直方向的角度。如果你已经知道相机的FOV直接在externalcamera.cfg中填上即可，如果你不知道，下面提供一种测量的方法:
+
+测量摄像机在距离为d时能看到的最大高度h，这样视野角度就=2*arctan(h/2/d)，如下图。
+
+![screenshot6](/assets/mr_filming_with_htc_vive_files/6.jpg)
+
+
+### 计算出摄像机和手柄之间的偏移
+
+把算出的FOV填进externalcamera.cfg中之后，就可以开始测量偏移了。 x,y,z是摄像机和手柄的相对位置，rx,ry,rz是相对朝向。
+
 比较方便的做法是通过特制的校准软件来实现。另外也可以手动调externalcamera.cfg中的数值。
 
+这里提供一个校准软件：[Download](/assets/mr_filming_with_htc_vive_files/externalcamera_cfg_calibrator.rar)
+
+得出这6个参数以及FOV后，只要摄像机和第三手柄的位置不调整且不改摄像机的视野范围，就不需要再次校准了，直接用之前算好的externalcamera.cfg文件即可。
+
+> Note: 因为有7个变量，校准其实是一个很繁琐、容易有误差的过程。所以一定要确保先算好FOV；另外尽可能让第三手柄和摄像机指向一样（考虑做一个特殊的架子？）且手柄正面朝上，这样的话rx,ry,rz就可以填0了。
 
 ### 用OBS合成视频或视频流
 
@@ -130,9 +158,13 @@ sceneResolutionScale=1
 ![screenshot4](/assets/mr_filming_with_htc_vive_files/4.png)
 
 其中，
+
 Foreground: 合成视频的前景
-Foreground alpha: 前景的alpha
+
+Foreground alpha: 前景的alpha（如果用色键处理前景的话，这个就不需要）
+
 Background: 合成视频的背景
+
 Gameview: 正常游戏画面，不用于合成mixed reality视频
 
 最终输出的影像和下图展示的一样，是由三个影像合成的：
